@@ -13,7 +13,7 @@ public class MemTrackerTest {
 
     @Test
     public void whenAddNewItemThenTrackerHasSameItem() {
-        MemTracker memTracker = new MemTracker();
+        Store memTracker = new MemTracker();
         Item item = new Item("test1");
         memTracker.add(item);
         Item result = memTracker.findById(item.getId());
@@ -22,7 +22,7 @@ public class MemTrackerTest {
 
     @Test
     public void whenFindAll() {
-        MemTracker memTracker = new MemTracker();
+        Store memTracker = new MemTracker();
         Item item1 = new Item("first");
         Item item2 = new Item("second");
         memTracker.add(item1);
@@ -34,7 +34,7 @@ public class MemTrackerTest {
 
     @Test
     public void whenFindByName() {
-        MemTracker memTracker = new MemTracker();
+        Store memTracker = new MemTracker();
         Item item1 = new Item("first");
         Item item2 = new Item("second");
         Item item3 = new Item("first");
@@ -48,7 +48,7 @@ public class MemTrackerTest {
 
     @Test
     public void whenFindById() {
-        MemTracker memTracker = new MemTracker();
+        Store memTracker = new MemTracker();
         Item item1 = new Item("first");
         Item item2 = new Item("second");
         Item item3 = new Item("first");
@@ -61,7 +61,7 @@ public class MemTrackerTest {
 
     @Test
     public void whenFindByIdNotFound() {
-        MemTracker memTracker = new MemTracker();
+        Store memTracker = new MemTracker();
         Item item1 = new Item("first");
         Item item2 = new Item("second");
         Item item3 = new Item("first");
@@ -74,7 +74,7 @@ public class MemTrackerTest {
 
     @Test
     public void whenReplace() {
-        MemTracker memTracker = new MemTracker();
+        Store memTracker = new MemTracker();
         Item item1 = new Item("first");
         memTracker.add(item1);
         memTracker.replace(item1.getId(), new Item("second"));
@@ -83,7 +83,7 @@ public class MemTrackerTest {
 
     @Test
     public void whenDelete() {
-        MemTracker memTracker = new MemTracker();
+        Store memTracker = new MemTracker();
         Item item1 = new Item("first");
         memTracker.add(item1);
         memTracker.delete(item1.getId());

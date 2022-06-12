@@ -6,13 +6,17 @@ import ru.job4j.tracker.input.Input;
 import ru.job4j.tracker.input.ValidateInput;
 import ru.job4j.tracker.output.ConsoleOutput;
 import ru.job4j.tracker.output.Output;
-import ru.job4j.tracker.store.MemTracker;
+import ru.job4j.tracker.store.Store;
+import ru.job4j.tracker.store.StoreFactory;
+import ru.job4j.tracker.store.StoreTypeEnum;
 
 import java.util.List;
 
 public class StartUI {
 
-    public void init(Input input, MemTracker tracker, List<UserAction> actions) {
+    private static final StoreTypeEnum STORE_TYPE = StoreTypeEnum.STORE_TYPE_SQL;
+
+    public void init(Input input, Store tracker, List<UserAction> actions) {
         boolean run = true;
         while (run) {
             showMenu(actions);
@@ -44,7 +48,8 @@ public class StartUI {
                 new FindByNameAction(output),
                 new ExitAction()
         );
-        MemTracker tracker = new MemTracker();
+        //Store tracker = new SqlTracker();// MemTracker();
+        Store tracker = StoreFactory.getStore(STORE_TYPE);
         new StartUI().init(validate, tracker, actions);
     }
 }
