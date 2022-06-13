@@ -7,7 +7,7 @@ import java.util.List;
 
 public class MemTracker implements Store {
 
-    MemTracker() {
+    public MemTracker() {
     }
 
     private final List<Item> items = new ArrayList<>();

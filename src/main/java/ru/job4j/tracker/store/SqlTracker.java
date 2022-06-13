@@ -12,14 +12,12 @@ import java.util.Properties;
 
 public class SqlTracker implements Store, AutoCloseable {
 
-    private final String tableName = "items";
-
-    private final String addItemQuery = "insert into " + tableName + "(name, created) values (?,?)";
-    private final String replaceItemQuery = "update " + tableName + " set name=?, created=? where id=?";
-    private final String deleteItemQuery = "delete from " + tableName + " where id =?";
-    private final String findItemByNameQuery = "select * from " + tableName + " where name =?";
-    private final String findItemByIdQuery = "select * from " + tableName + " where id =?";
-    private final String findAllItemsQuery = "select * from " + tableName;
+    private static final String ADD_ITEM_QUERY = "insert into items(name, created) values (?,?)";
+    private static final String REPLACE_ITEM_QUERY = "update items set name=?, created=? where id=?";
+    private static final String DELETE_ITEM_QUERY = "delete from items where id =?";
+    private static final String FIND_ITEM_BY_NAME_QUERY = "select * from items where name =?";
+    private static final String FIND_ITEM_BY_ID_QUERY = "select * from items where id =?";
+    private static final String FIND_ALL_ITEMS_QUERY = "select * from items";
 
     private Connection cn;
 
@@ -48,7 +46,7 @@ public class SqlTracker implements Store, AutoCloseable {
     @Override
     public Item add(Item item) {
 
-        try (PreparedStatement statement = cn.prepareStatement(addItemQuery,
+        try (PreparedStatement statement = cn.prepareStatement(ADD_ITEM_QUERY,
                 Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, item.getName());
             statement.setTimestamp(2, Timestamp.valueOf(item.getCreated()));
@@ -70,13 +68,11 @@ public class SqlTracker implements Store, AutoCloseable {
     @Override
     public boolean replace(int id, Item item) {
         boolean result = false;
-        try (PreparedStatement statement = cn.prepareStatement(replaceItemQuery)) {
-
+        try (PreparedStatement statement = cn.prepareStatement(REPLACE_ITEM_QUERY)) {
             statement.setString(1, item.getName());
             statement.setTimestamp(2, Timestamp.valueOf(item.getCreated()));
             statement.setInt(3, id);
-            statement.execute();
-            result = statement.getUpdateCount() > 0;
+            result = statement.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -87,11 +83,9 @@ public class SqlTracker implements Store, AutoCloseable {
     @Override
     public boolean delete(int id) {
         boolean result = false;
-        try (PreparedStatement statement = cn.prepareStatement(deleteItemQuery)) {
-
+        try (PreparedStatement statement = cn.prepareStatement(DELETE_ITEM_QUERY)) {
             statement.setInt(1, id);
-            statement.execute();
-            result = statement.getUpdateCount() > 0;
+            result = statement.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -103,10 +97,8 @@ public class SqlTracker implements Store, AutoCloseable {
     public List<Item> findAll() {
 
         List<Item> items = new ArrayList<>();
-        try (PreparedStatement statement = cn.prepareStatement(findAllItemsQuery)) {
-            statement.execute();
-
-            try (ResultSet resultSet = statement.getResultSet()) {
+        try (PreparedStatement statement = cn.prepareStatement(FIND_ALL_ITEMS_QUERY)) {
+            try (ResultSet resultSet = statement.executeQuery()) {
                 fullFillListFromResultSet(items, resultSet);
             }
 
@@ -120,11 +112,9 @@ public class SqlTracker implements Store, AutoCloseable {
     @Override
     public List<Item> findByName(String key) {
         List<Item> items = new ArrayList<>();
-        try (PreparedStatement statement = cn.prepareStatement(findItemByNameQuery)) {
+        try (PreparedStatement statement = cn.prepareStatement(FIND_ITEM_BY_NAME_QUERY)) {
             statement.setString(1, key);
-            statement.execute();
-
-            try (ResultSet resultSet = statement.getResultSet()) {
+            try (ResultSet resultSet = statement.executeQuery()) {
                 fullFillListFromResultSet(items, resultSet);
             }
 
@@ -137,16 +127,12 @@ public class SqlTracker implements Store, AutoCloseable {
     @Override
     public Item findById(int id) {
         Item resItem = null;
-        try (PreparedStatement statement = cn.prepareStatement(findItemByIdQuery)) {
+        try (PreparedStatement statement = cn.prepareStatement(FIND_ITEM_BY_ID_QUERY)) {
 
             statement.setInt(1, id);
-            statement.execute();
-
-            try (ResultSet resultSet = statement.getResultSet()) {
+            try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    resItem = new Item(resultSet.getInt(1),
-                            resultSet.getString(2),
-                            resultSet.getTimestamp(3).toLocalDateTime());
+                    resItem = getItem(resultSet);
                 }
             }
 
@@ -156,7 +142,7 @@ public class SqlTracker implements Store, AutoCloseable {
         return resItem;
     }
 
-    SqlTracker() {
+    public SqlTracker() {
         init();
     }
 
@@ -165,10 +151,14 @@ public class SqlTracker implements Store, AutoCloseable {
             throw new IllegalArgumentException();
         }
         while (resultSet.next()) {
-            Item item = new Item(resultSet.getInt(1),
-                    resultSet.getString(2),
-                    resultSet.getTimestamp(3).toLocalDateTime());
+            Item item = getItem(resultSet);
             items.add(item);
         }
+    }
+
+    private Item getItem(ResultSet resultSet) throws SQLException {
+        return new Item(resultSet.getInt(1),
+                resultSet.getString(2),
+                resultSet.getTimestamp(3).toLocalDateTime());
     }
 }
