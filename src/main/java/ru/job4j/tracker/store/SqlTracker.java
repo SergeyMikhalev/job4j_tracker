@@ -146,6 +146,10 @@ public class SqlTracker implements Store, AutoCloseable {
         init();
     }
 
+    public SqlTracker(Connection cn) {
+        this.cn = cn;
+    }
+
     private void fullFillListFromResultSet(List<Item> items, ResultSet resultSet) throws SQLException, IllegalArgumentException {
         if (Objects.isNull(resultSet) || Objects.isNull(items)) {
             throw new IllegalArgumentException();
