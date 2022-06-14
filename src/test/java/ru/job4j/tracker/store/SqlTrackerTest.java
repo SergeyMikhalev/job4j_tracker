@@ -63,9 +63,7 @@ public class SqlTrackerTest {
         SqlTracker tracker = new SqlTracker(connection);
         Item item1 = tracker.add(new Item("first"));
         Item item2 = tracker.add(new Item("second"));
-        List<Item> expected = List.of(item1, item2);
-        List<Item> result = tracker.findAll();
-        assertThat(result, is(expected));
+        assertThat(tracker.findAll(), is(List.of(item1, item2)));
     }
 
     @Test
@@ -74,9 +72,7 @@ public class SqlTrackerTest {
         Item item1 = tracker.add(new Item("first"));
         Item item2 = tracker.add(new Item("second"));
         Item item3 = tracker.add(new Item("first"));
-        List<Item> expected = List.of(item1, item3);
-        List<Item> result = tracker.findByName("first");
-        assertThat(result, is(expected));
+        assertThat(tracker.findByName("first"), is(List.of(item1, item3)));
     }
 
     @Test
@@ -85,8 +81,7 @@ public class SqlTrackerTest {
         Item item1 = tracker.add(new Item("first"));
         Item item2 = tracker.add(new Item("second"));
         Item item3 = tracker.add(new Item("first"));
-        Item result = tracker.findById(item2.getId());
-        assertThat(result, is(item2));
+        assertThat(tracker.findById(item2.getId()), is(item2));
     }
 
     @Test
@@ -95,8 +90,7 @@ public class SqlTrackerTest {
         Item item1 = tracker.add(new Item("first"));
         Item item2 = tracker.add(new Item("second"));
         Item item3 = tracker.add(new Item("first"));
-        Item result = tracker.findById(-1);
-        assertThat(result, is(nullValue()));
+        assertThat(tracker.findById(-1), is(nullValue()));
     }
 
     @Test

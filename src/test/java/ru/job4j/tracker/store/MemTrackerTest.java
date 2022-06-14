@@ -15,8 +15,7 @@ public class MemTrackerTest {
     public void whenAddNewItemThenTrackerHasSameItem() {
         Store memTracker = new MemTracker();
         Item item = memTracker.add(new Item("test1"));
-        Item result = memTracker.findById(item.getId());
-        assertThat(result.getName(), is(item.getName()));
+        assertThat(memTracker.findById(item.getId()).getName(), is(item.getName()));
     }
 
     @Test
@@ -24,9 +23,7 @@ public class MemTrackerTest {
         Store memTracker = new MemTracker();
         Item item1 = memTracker.add(new Item("first"));
         Item item2 = memTracker.add(new Item("second"));
-        List<Item> expected = List.of(item1, item2);
-        List<Item> result = memTracker.findAll();
-        assertThat(result, is(expected));
+        assertThat(memTracker.findAll(), is(List.of(item1, item2)));
     }
 
     @Test
@@ -35,9 +32,7 @@ public class MemTrackerTest {
         Item item1 = memTracker.add(new Item("first"));
         Item item2 = memTracker.add(new Item("second"));
         Item item3 = memTracker.add(new Item("first"));
-        List<Item> expected = List.of(item1, item3);
-        List<Item> result = memTracker.findByName("first");
-        assertThat(result, is(expected));
+        assertThat(memTracker.findByName("first"), is(List.of(item1, item3)));
     }
 
     @Test
@@ -46,8 +41,7 @@ public class MemTrackerTest {
         Item item1 = memTracker.add(new Item("first"));
         Item item2 = memTracker.add(new Item("second"));
         Item item3 = memTracker.add(new Item("first"));
-        Item result = memTracker.findById(item2.getId());
-        assertThat(result, is(item2));
+        assertThat(memTracker.findById(item2.getId()), is(item2));
     }
 
     @Test
@@ -56,8 +50,7 @@ public class MemTrackerTest {
         Item item1 = memTracker.add(new Item("first"));
         Item item2 = memTracker.add(new Item("second"));
         Item item3 = memTracker.add(new Item("first"));
-        Item result = memTracker.findById(-1);
-        assertThat(result, is(nullValue()));
+        assertThat(memTracker.findById(-1), is(nullValue()));
     }
 
     @Test
