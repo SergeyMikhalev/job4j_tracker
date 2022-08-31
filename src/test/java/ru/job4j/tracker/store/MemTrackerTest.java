@@ -11,6 +11,7 @@ import static org.junit.Assert.assertThat;
 
 public class MemTrackerTest {
 
+
     @Test
     public void whenAddNewItemThenTrackerHasSameItem() {
         Store memTracker = new MemTracker();
