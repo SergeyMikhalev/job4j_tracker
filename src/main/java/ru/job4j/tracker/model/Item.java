@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Entity
-@Table(name="items")
+@Table(name = "items")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
