@@ -163,6 +163,6 @@ public class SqlTracker implements Store, AutoCloseable {
     private Item getItem(ResultSet resultSet) throws SQLException {
         return new Item(resultSet.getInt(1),
                 resultSet.getString(2),
-                resultSet.getTimestamp(3).toLocalDateTime());
+                resultSet.getTimestamp(3).toLocalDateTime(), new ArrayList<>());
     }
 }
