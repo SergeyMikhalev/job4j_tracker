@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.*;
 
 public class HbmTrackerTest {
     private static final StandardServiceRegistry REGISTRY = new StandardServiceRegistryBuilder().configure().build();
@@ -63,7 +63,7 @@ public class HbmTrackerTest {
         item.setName("test1");
         tracker.add(item);
         Item items2 = tracker.findById(item.getId() + 1);
-        assertThat(items2, is(nullValue()));
+        assertNull(items2);
     }
 
     @Test
@@ -72,8 +72,10 @@ public class HbmTrackerTest {
         Item item = new Item();
         item.setName("test1");
         tracker.add(item);
-        assertThat(tracker.delete(item.getId()), is(true));
-        assertThat(tracker.findById(item.getId()), is(nullValue()));
+        boolean deleteResult = tracker.delete(item.getId());
+        Item itemFromDb = tracker.findById(item.getId());
+        assertTrue(deleteResult);
+        assertNull(itemFromDb);
     }
 
     @Test
@@ -84,8 +86,10 @@ public class HbmTrackerTest {
         tracker.add(item);
         Item item2 = new Item();
         item2.setName("test2");
-        assertThat(tracker.findById(item2.getId()), is(nullValue()));
-        assertThat(tracker.delete(item2.getId()), is(false));
+        Item itemFromDb = tracker.findById(item2.getId());
+        boolean deleteResult = tracker.delete(item2.getId());
+        assertNull(itemFromDb);
+        assertFalse(deleteResult);
     }
 
     @Test
@@ -144,10 +148,7 @@ public class HbmTrackerTest {
         List<Item> items = tracker.findAll();
         assertThat(items.size(), is(4));
         List<String> namesFromDb = items.stream().map(Item::getName).collect(Collectors.toList());
-        for (int i = 1; i < 5; i++) {
-            assertThat(namesFromDb.containsAll(names), is(true));
-        }
-
+        assertTrue(namesFromDb.containsAll(names));
     }
 
     @Test
@@ -158,8 +159,10 @@ public class HbmTrackerTest {
         Item item2 = new Item();
         item2.setName("item2");
         tracker.add(item);
-        assertThat(tracker.replace(item.getId() + 1, item2), is(false));
-        assertThat(tracker.findById(item.getId()).getName(), is("item1"));
+        boolean replaceResult = tracker.replace(item.getId() + 1, item2);
+        assertFalse(replaceResult);
+        Item itemFromDb = tracker.findById(item.getId());
+        assertThat(itemFromDb.getName(), is("item1"));
     }
 
     @Test
@@ -170,10 +173,11 @@ public class HbmTrackerTest {
         item = tracker.add(item);
         Item item2 = new Item();
         item2.setName("item2");
-        tracker.add(item);
         item2.setId(item.getId());
-        assertThat(tracker.replace(item.getId(), item2), is(true));
-        assertThat(tracker.findById(item.getId()).getName(), is("item2"));
+        boolean replaceResult = tracker.replace(item.getId(), item2);
+        assertTrue(replaceResult);
+        Item itemFromDb = tracker.findById(item.getId());
+        assertThat(itemFromDb.getName(), is("item2"));
     }
 
 }
