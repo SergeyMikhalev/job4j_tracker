@@ -53,6 +53,5 @@ public class StartUI {
 
         MemTracker tracker = new MemTracker();
         new StartUI().init(validate, tracker, actions);
-
     }
 }
