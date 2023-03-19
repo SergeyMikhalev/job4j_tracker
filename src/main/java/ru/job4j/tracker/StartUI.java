@@ -52,8 +52,8 @@ public class StartUI {
                 new ExitAction()
         );
 
-        try (HbmTracker tracker = new  HbmTracker()) {
-            new StartUI().init(validate, tracker, actions);
-        }
+        MemTracker tracker = new MemTracker();
+        new StartUI().init(validate, tracker, actions);
+
     }
 }
